@@ -100,3 +100,40 @@ O resultado mudaria de forma proporcional à não uniformidade da iluminação, 
 **Cite um caso em que seu método falharia**
 
 Este próprio experimento é o caso: a segmentação contou **25 moedas em vez de 24** porque uma faixa do fundo, na parte superior da imagem, tem um tom mais claro que o restante e foi segmentada como um objeto adicional pelo limiar global do Otsu. Isso ilustra uma limitação do método: ele não diferencia "objeto real" de "qualquer região que ultrapasse o brilho do limiar", então qualquer deformação na iluminação do fundo, o método tende a falhar. Uma melhora possível seria usar limiarização adaptativa/local (`threshold_local`) em vez de global, calculando um limiar diferente por cada região da imagem.
+
+
+## Questão 3 — Tanque com espuma
+
+### Câmera
+
+Colocaria uma câmera fixa do lado do tanque, olhando pra escada inteira, do primeiro degrau até o topo. O importante é ela nunca se mexer depois de instalada, porque vou usar a escada como "régua" pra medir a altura. Colocaria também uma luz fixa perto da câmera, pra não depender da luz do ambiente que muda o dia todo. Fazer no mesmo estilo da questão 2: limiar adaptativo pra achar onde a espuma toca a escada, e variação de brilho pra estimar densidade.
+
+### Altura
+
+Como os degraus são igualmente espaçados, dá pra usar eles como referência de medida — é só saber a distância real entre um degrau e outro (isso mediria uma vez só, na instalação) já que a câmera é fixa e a referência (escada) não muda de lugar..
+
+Na prática:
+1. Marcar a posição de cada degrau na imagem, uma única vez.
+2. O sistema identifica onde a espuma "encosta" na escada (a espuma tem uma textura/brilho diferente do degrau seco, assim da pra interpretar isso).
+3. Sabendo em qual degrau (ou fração de degrau) a espuma está batendo, convertemos isso pra altura real.
+
+
+### Densidade
+
+Como diz no enunciado: bolha grande e definida = menos densa, superfície lisa = mais densa. Isso dá pra pegar olhando a variação de brilho entre pixels vizinhos numa região pequena da imagem (por exemplo, um quadradinho de 20x20 pixels na superfície da espuma):
+
+- Se essa variação for alta -> tem bolha aparecendo, contraste entre luz e sombra -> espuma menos densa.
+- Se for baixa -> superfície mais uniforme -> espuma mais densa.
+
+### O que precisaria de dados
+
+- Um operador batendo o olho em algumas imagens e classificando a densidade numa escala simples (exemplo de 1 a 5), só pra eu calibrar o que é "alto" ou "baixo" na variação de brilho.
+- Medir a distância real entre os degraus, uma vez.
+
+### O que pode dar errado e como resolver
+
+**Luz mudando ao longo do dia** — afeta tanto achar a linha da espuma quanto medir a densidade. Resolveria com luz de led fixa perto da câmera e usando limiar adaptativo em vez de um valor fixo. (Igual a solução pensada para Q2)
+
+**Reflexo na espuma** — pode criar um brilho forte que atrapalha a leitura. Um filtro polarizador na lente poderia resolver uma boa parte, sem precisar mexer no código.
+
+**Espuma balançando/mudando rápido** — uma foto isolada pode não representar bem o momento real. Em vez de olhar um frame só, tiraria a média das últimas leituras (uns 10 segundos de vídeo). Assim, aumentaria a precisão do programa.

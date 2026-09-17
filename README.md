@@ -110,7 +110,7 @@ Colocaria uma câmera fixa do lado do tanque, olhando pra escada inteira, do pri
 
 ### Altura
 
-Como os degraus são igualmente espaçados, dá pra usar eles como referência de medida — é só saber a distância real entre um degrau e outro (isso mediria uma vez só, na instalação) já que a câmera é fixa e a referência (escada) não muda de lugar..
+Como os degraus são igualmente espaçados, dá pra usar eles como referência de medida — é só saber a distância real entre um degrau e outro (isso mediria uma vez só, na instalação) já que a câmera é fixa e a referência (escada) não muda de lugar.
 
 Na prática:
 1. Marcar a posição de cada degrau na imagem, uma única vez.
